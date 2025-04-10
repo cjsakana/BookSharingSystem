@@ -1,0 +1,19 @@
+<context id="DB2Tables" targetRuntime="MyBatis3">
+    <!-- 启用驼峰命名 -->
+    <property name="useActualColumnNames" value="false" />
+    <property name="useColumnIndexes" value="false" />
+    <property name="javaFileEncoding" value="UTF-8" />
+    <property name="trimStrings" value="true" />
+    <property name="enableSubPackages" value="true" />
+    <property name="autoDelimitKeywords" value="true" />
+
+    <!-- 指定字段名转换策略 -->
+    <property name="columnOverride" value="true" />
+    <property name="columnRenamingRule" value="[A-Z]" />
+
+<!--    <table tableName="article" domainObjectName="Article">-->
+<!--        &lt;!&ndash; 可选：强制指定字段名映射 &ndash;&gt;-->
+<!--        <columnOverride column="created_at" property="createdAt" />-->
+<!--        <columnOverride column="updated_at" property="updatedAt" />-->
+<!--    </table>-->
+</context>
