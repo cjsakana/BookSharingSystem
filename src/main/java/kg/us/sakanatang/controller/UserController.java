@@ -165,8 +165,12 @@ public class UserController {
     // 分页获取用户列表
     @GetMapping("/all")
     public ApiResponse<List<UserVO>> getUsers(
+            @RequestAttribute(value = "role", required = true) int role,
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, defaultValue = "12") Integer size) {
+            @RequestParam(required = false, defaultValue = "10") Integer size) {
+        if (role!=1){
+            return ApiResponse.fail(401,"无权限");
+        }
         try {
 
             Page<User> users = userService.getAllUsers(page, size);

@@ -1,23 +1,30 @@
 package kg.us.sakanatang.controller;
 
+import kg.us.sakanatang.common.ApiResponse;
 import kg.us.sakanatang.domain.entity.Article;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import kg.us.sakanatang.domain.vo.ArticleVO;
+import kg.us.sakanatang.service.ArticleService;
+import kg.us.sakanatang.service.impl.ArticleServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/article")
 public class ArticleController {
+    @Autowired
+    ArticleServiceImpl articleServiceImpl;
+
+
     @GetMapping()
-    public ArrayList<Article> getArticleByTag(@RequestParam(value = "content", defaultValue = "") String content,
-                                              @RequestParam(value = "tag", defaultValue = "0") int tag,
-                                              @RequestParam(value = "page", defaultValue = "1") int page,
-                                              @RequestParam(value = "size", defaultValue = "20") int size) {
+    public ArrayList<Article> getArticle(@RequestParam(value = "content", defaultValue = "") String content,
+                                         @RequestParam(value = "tag", defaultValue = "0") int tag,
+                                         @RequestParam(value = "page", defaultValue = "1") int page,
+                                         @RequestParam(value = "size", defaultValue = "12") int size) {
         if (page == 1) {
             return new ArrayList<>(Arrays.asList(
                     new Article() {{
@@ -384,5 +391,143 @@ public class ArticleController {
 //        ));
 //
 //        return list;
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<Article> getPersonArticle(
+            @RequestAttribute(value = "id", required = true) int id,
+            @PathVariable(value = "id") int articleId) {
+        try {
+            Article article=new Article();
+            return ApiResponse.success(article);
+        }catch (Exception e){
+            return ApiResponse.fail(500,"获取文章失败");
+        }
+    }
+
+
+    @PostMapping()
+    public ApiResponse<String> create(@RequestAttribute(value = "id", required = true) int id,
+                                      @RequestBody Map<String, String> params) {
+        try {
+            if (params == null) {
+                return ApiResponse.fail(400, "请求参数不能为空");
+            }
+
+            String bookName = params.get("bookName");
+            String cover = params.get("cover");
+            String title = params.get("title");
+            String content = params.get("content");
+            if (bookName == null || cover == null || title == null || content == null) {
+                return ApiResponse.fail(400, "必须参数不能为空");
+            }
+            if (bookName.isEmpty() || cover.isEmpty() || title.isEmpty() || content.isEmpty()) {
+                return ApiResponse.fail(400, "必须参数不能为空");
+            }
+
+            String tagStr = params.get("tag");
+            int tag = Integer.parseInt(tagStr);
+            String isbn = params.get("isbn");
+
+            Article article = new Article();
+            article.setBookName(bookName);
+            article.setIsbn(isbn);
+            article.setCover(cover);
+            article.setTitle(title);
+            article.setContent(content);
+            article.setUserId(id);
+            article.setTag(tag);
+
+//            articleServiceImpl.
+
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.fail(500, "创建文章失败");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<String> update(@RequestAttribute(value = "id", required = true) int userid,
+                                      @PathVariable(value = "id") int articleId,
+                                      @RequestBody Map<String, String> params) {
+        try {
+            if (params == null) {
+                return ApiResponse.fail(400, "请求参数不能为空");
+            }
+
+            // 查询图书信息
+            Article article = new Article();
+
+            // 鉴权
+            // 后面的得重写
+
+            String bookName = params.get("bookName");
+            String cover = params.get("cover");
+            String title = params.get("title");
+            String content = params.get("content");
+            if (bookName == null || cover == null || title == null || content == null) {
+                return ApiResponse.fail(400, "必须参数不能为空");
+            }
+            if (bookName.isEmpty() || cover.isEmpty() || title.isEmpty() || content.isEmpty()) {
+                return ApiResponse.fail(400, "必须参数不能为空");
+            }
+
+            String tagStr = params.get("tag");
+            int tag = Integer.parseInt(tagStr);
+
+            article.setBookName(bookName);
+            article.setCover(cover);
+            article.setTitle(title);
+            article.setContent(content);
+            article.setTag(tag);
+
+//            articleServiceImpl.
+
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.fail(500, "修改文章失败");
+        }
+    }
+
+
+    @PostMapping("/publish")
+    public ApiResponse<String> publish(@RequestAttribute(value = "id", required = true) int userid,
+                                       @RequestBody Map<String, String> params) {
+        try {
+            if (params == null) {
+                return ApiResponse.fail(400, "请求参数不能为空");
+            }
+
+            String idStr = params.get("id");
+            int id = Integer.parseInt(idStr);
+            String isPublishedStr = params.get("isPublished");
+            int isPublished = Integer.parseInt(isPublishedStr);
+
+
+//            articleServiceImpl.
+
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.fail(500, "发表文章失败");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<String> publish(@RequestAttribute(value = "id", required = true) int userid,
+                                       @PathVariable(value = "id") int articleId,
+                                       @RequestBody Map<String, String> params) {
+        try {
+            if (params == null) {
+                return ApiResponse.fail(400, "请求参数不能为空");
+            }
+
+            // 删除
+//            articleServiceImpl.
+// 清缓存
+
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.fail(500, "删除文章失败");
+        }
     }
 }

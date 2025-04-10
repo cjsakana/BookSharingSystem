@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS `article`
     `content`     TEXT         NOT NULL COMMENT '文章内容',
     `userId`      INT          NOT NULL COMMENT '文章作者ID',
     `tag`         INT          NOT NULL COMMENT '书类型',
+    `likes` INT DEFAULT 0 COMMENT '点赞数',
     `isPublished` TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否已发布（0:未发布，1:已发布）',
     PRIMARY KEY (`id`),
     KEY `idx_deletedAt` (`deletedAt`) COMMENT '软删除查询索引',

@@ -1,16 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-  // 检查cookie中是否有token
-  boolean hasToken = false;
-  Cookie[] cookies = request.getCookies();
-  if (cookies != null) {
-    for (Cookie cookie : cookies) {
-      if ("token".equals(cookie.getName())) {
-        hasToken = true;
-        break;
-      }
-    }
-  }
 
   String currentPage = request.getParameter("page") == null ? "home" : request.getParameter("page");
   String contentPage = "/WEB-INF/views/" + currentPage + ".jsp";

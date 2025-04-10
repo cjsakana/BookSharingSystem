@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let hasMore = true;
     let lastScrollTime = 0;
 
+    window.onload = function () {
+        performSearch();
+    };
 
     // 点击搜索框时显示热门搜索
     searchInput.addEventListener('focus', function () {
