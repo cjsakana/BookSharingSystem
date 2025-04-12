@@ -2,8 +2,10 @@ package kg.us.sakanatang.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import kg.us.sakanatang.domain.entity.Article;
+import kg.us.sakanatang.mapper.UserMapper;
 import kg.us.sakanatang.service.ArticleService;
 import kg.us.sakanatang.mapper.ArticleMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService{
-
+    @Autowired
+    private ArticleMapper articleMapper;
 }
 
 

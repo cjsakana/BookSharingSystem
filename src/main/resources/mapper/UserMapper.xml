@@ -5,42 +5,42 @@
 <mapper namespace="kg.us.sakanatang.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="kg.us.sakanatang.domain.entity.User">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="createdAt" column="createdAt" jdbcType="TIMESTAMP"/>
-            <result property="updatedAt" column="updatedAt" jdbcType="TIMESTAMP"/>
-            <result property="deletedAt" column="deletedAt" jdbcType="TIMESTAMP"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="email" column="email" jdbcType="VARCHAR"/>
-            <result property="password" column="password" jdbcType="VARCHAR"/>
-            <result property="role" column="role" jdbcType="INTEGER"/>
-            <result property="sex" column="sex" jdbcType="TINYINT"/>
-            <result property="signature" column="signature" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="createdAt" column="createdAt" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updatedAt" jdbcType="TIMESTAMP"/>
+        <result property="deletedAt" column="deletedAt" jdbcType="TIMESTAMP"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="sex" column="sex" jdbcType="TINYINT"/>
+        <result property="signature" column="signature" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,createdAt,updatedAt,
-        deletedAt,name,email,
-        password,role,sex,
-        signature
+        deletedAt,avatar,name,
+        email,password,role,
+        sex,signature
     </sql>
 
     <update id="updateUser">
-        update user
+        UPDATE user
         <set>
-            <if test="name != ''">
+            <if test="name != null and name != ''">
                 name = #{name},
             </if>
-            <if test="password != ''">
-                `password` = #{password},
+            <if test="password != null and password != ''">
+                password = #{password},
             </if>
-            <if test="sex != null and sex >= 0 and sex &lt;= 2">
+            <if test="sex != null">
                 sex = #{sex},
             </if>
-            <if test="signature != ''">
+            <if test="signature != null">
                 signature = #{signature},
             </if>
         </set>
-        where id = #{id} and deleted_at is null
+        WHERE id = #{id}
     </update>
-
 </mapper>

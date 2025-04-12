@@ -5,6 +5,11 @@ const login = (data) => {
     return request(prefixURL + "/login", "POST", data)
 }
 
+const register = (data)=>{
+    return request(prefixURL+"/register","POST",data)
+}
+
 export {
-    login
+    login,
+    register
 }

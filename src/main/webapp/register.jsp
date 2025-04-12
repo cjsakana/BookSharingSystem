@@ -11,65 +11,123 @@
     <title>图书分享系统 - 用户注册</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f5f5f5;
+            background-image: url("https://mysys.seig.edu.cn/static/img/login-background.f9f49138.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
+
         .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0; /* 添加细边框 */
         }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .form-group {
+
+        .header {
+            position: relative; /* 建立相对定位上下文 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 15px;
         }
+
+        .back-btn {
+            position: absolute; /* 绝对定位 */
+            left: 0; /* 固定在左侧 */
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            color: #333;
+        }
+
+        h2 {
+            margin: 0;
+            font-weight: 500;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: bold;
+            color: #555;
+            font-size: 14px;
         }
+
         input[type="text"], input[type="password"], input[type="email"], textarea {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 14px;
+            height: 36px;
         }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
         .radio-group {
             display: flex;
-            gap: 15px;
+            gap: 12px;
+            margin-top: 2px;
         }
+
         .radio-option {
             display: flex;
             align-items: center;
+            font-size: 13px;
         }
+
+        .radio-option input {
+            margin-right: 5px;
+        }
+
         .code-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
+
         .code-group input {
             flex: 1;
         }
+
         .code-group button {
-            padding: 8px 15px;
+            padding: 8px 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 13px;
         }
-        .code-group button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
+
         .submit-btn {
             width: 100%;
             padding: 10px;
@@ -77,107 +135,49 @@
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .back-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+            height: 28px;
+            background-color: transparent;
+            color: #666;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
             cursor: pointer;
         }
-        .submit-btn:hover {
-            background-color: #0b7dda;
-        }
-        .error {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
-        }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 发送验证码
-            $('#sendCodeBtn').click(function() {
-                const email = $('#email').val();
-                if (!email) {
-                    alert('请输入邮箱地址');
-                    return;
-                }
 
-                // 验证邮箱格式
-                if (!/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(email)) {
-                    alert('邮箱格式不正确');
-                    return;
-                }
-
-                // 发送验证码请求
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/user/sendCode',
-                    type: 'POST',
-                    data: {email: email},
-                    success: function(response) {
-                        if (response.success) {
-                            alert('验证码已发送，请查收');
-                            startCountdown();
-                        } else {
-                            alert(response.message || '验证码发送失败');
-                        }
-                    },
-                    error: function() {
-                        alert('服务器错误，请稍后再试');
-                    }
-                });
-            });
-
-            // 倒计时功能
-            function startCountdown() {
-                let seconds = 60;
-                const btn = $('#sendCodeBtn');
-                btn.prop('disabled', true);
-
-                const timer = setInterval(function() {
-                    seconds--;
-                    btn.text(seconds + '秒后重试');
-
-                    if (seconds <= 0) {
-                        clearInterval(timer);
-                        btn.prop('disabled', false);
-                        btn.text('获取验证码');
-                    }
-                }, 1000);
-            }
-
-            // 表单提交验证
-            $('#registerForm').submit(function(e) {
-                const email = $('#email').val();
-                const password = $('#password').val();
-                const code = $('#code').val();
-                const name = $('#name').val();
-
-                if (!email || !password || !code || !name) {
-                    alert('请填写所有必填项');
-                    e.preventDefault();
-                    return false;
-                }
-
-                // 可以添加更多验证逻辑
-                return true;
-            });
-        });
-    </script>
 </head>
+<%--<script type="module" async src="${pageContext.request.contextPath}/js/register.js"></script>--%>
 <body>
+<script type="module" src="${pageContext.request.contextPath}/js/register.js"></script>
+
 <div class="container">
-    <h1>用户注册</h1>
-    <form id="registerForm" action="${pageContext.request.contextPath}/user/register" method="post">
+    <div class="header">
+        <button type="button" id="backBtn" class="back-btn" title="返回"> &lt; 返回</button>
+        <h2>用户注册</h2>
+    </div>
+    <div id="registerForm">
         <div class="form-group">
-            <label for="email">邮箱*</label>
+            <label for="email">邮箱 *</label>
             <input type="email" id="email" name="email" required>
         </div>
 
         <div class="form-group">
-            <label for="password">密码*</label>
+            <label for="password">密码 *</label>
             <input type="password" id="password" name="password" required>
         </div>
 
         <div class="form-group">
-            <label for="code">验证码*</label>
+            <label for="code">验证码 *</label>
             <div class="code-group">
                 <input type="text" id="code" name="code" required>
                 <button type="button" id="sendCodeBtn">获取验证码</button>
@@ -185,15 +185,15 @@
         </div>
 
         <div class="form-group">
-            <label for="name">昵称*</label>
+            <label for="name">昵称 *</label>
             <input type="text" id="name" name="name" required>
         </div>
 
         <div class="form-group">
-            <label>性别*</label>
+            <label>性别 *</label>
             <div class="radio-group">
                 <div class="radio-option">
-                    <input type="radio" id="female" name="sex" value="0" checked>
+                    <input type="radio" id="female" name="sex" value="0">
                     <label for="female">女</label>
                 </div>
                 <div class="radio-option">
@@ -201,7 +201,7 @@
                     <label for="male">男</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="unknown" name="sex" value="2">
+                    <input type="radio" id="unknown" name="sex" value="2" checked>
                     <label for="unknown">未知</label>
                 </div>
             </div>
@@ -212,8 +212,8 @@
             <textarea id="signature" name="signature" placeholder="该用户很神秘，没有留下什么"></textarea>
         </div>
 
-        <button type="submit" class="submit-btn">注册</button>
-    </form>
+        <button type="button" class="submit-btn" id="submitBtn">注册</button>
+    </div>
 </div>
 </body>
 </html>

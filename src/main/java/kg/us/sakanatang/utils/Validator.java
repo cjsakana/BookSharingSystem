@@ -7,7 +7,9 @@ public class Validator {
     // 手机号正则表达式
     private static final String PHONE_REGEX = "^1[3-9]\\d{9}$";
     // 邮箱正则表达式
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+//    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private static final String EMAIL_REGEX = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
+
 
     public static boolean isValidPhone(String phone) {
         return isValid(PHONE_REGEX, phone);

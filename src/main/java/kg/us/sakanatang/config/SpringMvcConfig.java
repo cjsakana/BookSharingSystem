@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
-//@ComponentScan({"kg.us.sakanatang.controller","kg.us.sakanatang.config"})
-@ComponentScan("kg.us.sakanatang.controller")
+@ComponentScan({"kg.us.sakanatang.controller","kg.us.sakanatang.config","kg.us.sakanatang.utils"})
+//@ComponentScan("kg.us.sakanatang.controller")
 @EnableWebMvc
 public class SpringMvcConfig implements WebMvcConfigurer{
     @Override
@@ -22,9 +22,12 @@ public class SpringMvcConfig implements WebMvcConfigurer{
     @Autowired
     private AuthInterceptor authInterceptor;
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(authInterceptor).addPathPatterns("/api/**")
-//                .excludePathPatterns("/css/**", "/js/**", "/images/**", "/icon/**", "/static/**");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor).addPathPatterns("/api/**")
+                .excludePathPatterns("/css/**", "/js/**", "/images/**", "/icon/**", "/static/**")
+                .excludePathPatterns("/api/email/sendVerifiedCode")
+                .excludePathPatterns("/api/user/register","/api/user/login")
+                .excludePathPatterns("/api/article");
+    }
 }

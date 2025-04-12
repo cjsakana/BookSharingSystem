@@ -1,13 +1,13 @@
 package kg.us.sakanatang.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import kg.us.sakanatang.common.ApiResponse;
 import kg.us.sakanatang.domain.entity.User;
 import kg.us.sakanatang.domain.vo.UserVO;
 import kg.us.sakanatang.service.UserService;
 import kg.us.sakanatang.utils.CookieUtils;
 import kg.us.sakanatang.utils.JWTUtil;
-import org.springframework.beans.BeanUtils;
+import kg.us.sakanatang.utils.RedisUtil;
+import kg.us.sakanatang.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    RedisUtil redisUtil;
 
     // 用户注册
     @PostMapping("/register")
@@ -41,14 +42,15 @@ public class UserController {
             }
 
 
-            // 测试就先不用
-//            boolean isEmail=Validator.isValidEmail(email);
-//            if (!isEmail) {
-//                return ApiResponse.fail(400, "邮箱不正确");
-//            }
+            boolean isEmail = Validator.isValidEmail(email);
+            if (!isEmail) {
+                return ApiResponse.fail(400, "邮箱不正确");
+            }
 
-            String code = params.get("code");
-            //TODO 校验验证码
+            String code = params.get("code").trim();
+            if (!redisUtil.checkCode(email, code)) {
+                return ApiResponse.fail(400, "验证码不正确");
+            }
 
 
             String name = params.get("name");
@@ -72,20 +74,21 @@ public class UserController {
             user.setSignature(params.get("signature"));
 
 
-            int id = userService.createUser(user);
+            UserVO userVO = userService.createUser(user);
+            int id = userVO.getId();
             if (id <= 0) {
                 return ApiResponse.fail(500, "用户注册失败");
             }
+
+            // 注册成功删除验证码
+            String codeKey = "user:verified:";
+            redisUtil.del(codeKey + email);
 
             String token = JWTUtil.getToken(new ConcurrentHashMap<>() {{
                 put("id", id);
                 put("role", 0);
             }});
-            CookieUtils.setCookie(response, "token", token);
-
-            // 将 user 转为 userVO，隐藏部分字段
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
+            CookieUtils.setCookie(response, "token", "Bearer+" + token);
 
             return ApiResponse.success(userVO);
         } catch (Exception e) {
@@ -110,31 +113,27 @@ public class UserController {
                 return ApiResponse.fail(400, "邮箱和密码不能为空");
             }
 
-            // 测试就先不用
-//            boolean isEmail=Validator.isValidEmail(email);
-//            if (!isEmail) {
-//                return ApiResponse.fail(400, "邮箱不正确");
-//            }
+            boolean isEmail = Validator.isValidEmail(email);
+            if (!isEmail) {
+                return ApiResponse.fail(400, "邮箱不正确");
+            }
 
 
-            User user = userService.login(email, password);
-            if (user == null) {
+            UserVO userVO = userService.login(email, password);
+            if (userVO == null) {
                 return ApiResponse.fail(401, "邮箱或密码错误");
             }
 
             String token = JWTUtil.getToken(new ConcurrentHashMap<>() {{
-                put("id", user.getId());
+                put("id", userVO.getId());
                 put("role", 0);
             }});
-            CookieUtils.setCookie(response, "token", token);
-
-            // 将 user 转为 userVO，隐藏部分字段
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
+            CookieUtils.setCookie(response, "token", "Bearer+" + token);
 
             return ApiResponse.success(userVO);
         } catch (Exception e) {
-            return ApiResponse.fail(500, "登录失败，请重试");
+            System.out.println(e.getMessage());
+            return ApiResponse.fail(500, "登录失败，请重试"+e.getMessage());
         }
     }
 
@@ -147,14 +146,11 @@ public class UserController {
                 return ApiResponse.fail(400, "非法用户");
             }
 
-            User user = userService.getUserById(id);
-            if (user == null) {
+            UserVO userVO = userService.getUserById(id);
+            if (userVO == null) {
                 return ApiResponse.fail(404, "用户不存在");
             }
 
-            // 将 user 转为 userVO，隐藏部分字段
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
 
             return ApiResponse.success(userVO);
         } catch (Exception e) {
@@ -168,19 +164,11 @@ public class UserController {
             @RequestAttribute(value = "role", required = true) int role,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size) {
-        if (role!=1){
-            return ApiResponse.fail(401,"无权限");
+        if (role != 1) {
+            return ApiResponse.fail(401, "无权限");
         }
         try {
-
-            Page<User> users = userService.getAllUsers(page, size);
-
-
-            List<UserVO> userVOList = users.getRecords().stream().map(user -> {
-                UserVO userVO = new UserVO();
-                BeanUtils.copyProperties(user, userVO);
-                return userVO;
-            }).collect(Collectors.toList());
+            List<UserVO> userVOList = userService.getAllUsers(page, size);
 
             return ApiResponse.success(userVOList);
         } catch (Exception e) {
@@ -228,9 +216,7 @@ public class UserController {
             }
 
             // 返回更新后的用户信息
-            User updatedUser = userService.getUserById(id);
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
+            UserVO userVO = userService.getUserById(id);
 
             return ApiResponse.success(userVO);
         } catch (Exception e) {
@@ -274,7 +260,7 @@ public class UserController {
 
     // 注销用户
     @DeleteMapping("")
-    public ApiResponse<Void> deleteUser(@RequestAttribute(value = "id", required = true) int id,HttpServletResponse response) {
+    public ApiResponse<Void> deleteUser(@RequestAttribute(value = "id", required = true) int id, HttpServletResponse response) {
         try {
             boolean success = userService.deleteUser(id);
             if (!success) {
@@ -285,7 +271,7 @@ public class UserController {
             CookieUtils.clearCookie(response, "token");
             return ApiResponse.success();
         } catch (Exception e) {
-            return ApiResponse.fail(500, "注销用户失败" );
+            return ApiResponse.fail(500, "注销用户失败");
         }
     }
 }

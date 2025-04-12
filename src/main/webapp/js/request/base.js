@@ -9,7 +9,6 @@ async function request(url, method = 'GET', requestBody = null, queryParams = nu
         let fullUrl = baseURL + url;
 
         if (queryParams) {
-            console.log(111)
             const queryString = new URLSearchParams(queryParams).toString();
             fullUrl += (url.includes('?') ? '&' : '?') + queryString;
         }

@@ -132,7 +132,7 @@
 
 </head>
 
-<script type="module" src="${pageContext.request.contextPath}/js/login.js"></script>
+<script type="module" async src="${pageContext.request.contextPath}/js/login.js"></script>
 
 
 <body>

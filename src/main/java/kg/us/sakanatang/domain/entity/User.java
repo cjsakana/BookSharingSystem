@@ -1,7 +1,9 @@
 package kg.us.sakanatang.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -32,8 +34,12 @@ public class User implements Serializable {
     /**
      * 删除时间（软删除）
      */
-    @TableLogic
     private Date deletedAt;
+
+    /**
+     * 头像
+     */
+    private String avatar;
 
     /**
      * 用户名
@@ -56,7 +62,7 @@ public class User implements Serializable {
     private Integer role;
 
     /**
-     * 性别（0:女，1:男，2:未知）
+     * 性别（0:女，1:男）
      */
     private Integer sex;
 
@@ -84,6 +90,7 @@ public class User implements Serializable {
             && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
             && (this.getUpdatedAt() == null ? other.getUpdatedAt() == null : this.getUpdatedAt().equals(other.getUpdatedAt()))
             && (this.getDeletedAt() == null ? other.getDeletedAt() == null : this.getDeletedAt().equals(other.getDeletedAt()))
+            && (this.getAvatar() == null ? other.getAvatar() == null : this.getAvatar().equals(other.getAvatar()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
@@ -100,6 +107,7 @@ public class User implements Serializable {
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getUpdatedAt() == null) ? 0 : getUpdatedAt().hashCode());
         result = prime * result + ((getDeletedAt() == null) ? 0 : getDeletedAt().hashCode());
+        result = prime * result + ((getAvatar() == null) ? 0 : getAvatar().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getEmail() == null) ? 0 : getEmail().hashCode());
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
@@ -119,6 +127,7 @@ public class User implements Serializable {
         sb.append(", createdAt=").append(createdAt);
         sb.append(", updatedAt=").append(updatedAt);
         sb.append(", deletedAt=").append(deletedAt);
+        sb.append(", avatar=").append(avatar);
         sb.append(", name=").append(name);
         sb.append(", email=").append(email);
         sb.append(", password=").append(password);

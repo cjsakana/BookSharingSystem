@@ -1,8 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     String currentPageTmp = request.getParameter("page") == null ? "home" : request.getParameter("page");
-    String avatar = (String) session.getAttribute("userAvatar");
-//     avatar = "https://chat.deepseek.com/favicon.svg"; // 默认头像URL
+
 %>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -30,13 +29,8 @@
         </div>
     </a>
     <a href="index.jsp?page=profile" class="nav-item <%= "profile".equals(currentPageTmp) ? "active" : "" %>">
-        <div class="nav-item-content">
-<%--            <i class="fas fa-user nav-icon"></i>--%>
-            <% if (avatar != null && !avatar.isEmpty()) { %>
-                <img src="<%= avatar %>" class="user-avatar" alt="用户头像">
-            <% } else { %>
-                <i class="fas fa-user nav-icon"></i>
-            <% } %>
+        <div class="nav-item-content" id="avatar-container">
+            <i class="fas fa-user nav-icon"></i>
             <span class="nav-text">我</span>
         </div>
     </a>
@@ -69,6 +63,39 @@
 </div>
 
 <script>
+    const container = document.getElementById('avatar-container');
+
+     // 从 localStorage 读取 userData
+    const userData = localStorage.getItem('userData');
+
+    if (userData) {
+        try {
+            const { avatar } = JSON.parse(userData);
+
+            // 2. 如果存在头像URL，替换默认图标
+            if (avatar?.trim()) {
+                // 移除默认图标
+                const icon = container.querySelector('.fa-user');
+                if (icon) icon.remove();
+
+                // 插入头像图片
+                const img = document.createElement('img');
+                img.src = avatar;
+                img.className = 'user-avatar';
+                img.alt = '用户头像';
+                img.onerror = () => {
+                    img.src = 'default-avatar.png'; // 加载失败时显示默认图
+                };
+
+                // 将头像插入到文字前
+                container.insertBefore(img, container.querySelector('.nav-text'));
+            }
+        } catch (e) {
+            console.error('解析本地存储失败:', e);
+        }
+    }
+
+
     // 更多菜单控制
     const moreButton = document.getElementById('moreButton');
     const moreMenu = document.getElementById('moreMenu');

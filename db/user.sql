@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS `user`
     `createdAt` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updatedAt` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `deletedAt` TIMESTAMP    NULL     DEFAULT NULL COMMENT '删除时间（软删除）',
+    `avatar`    VARCHAR(255) COMMENT '头像',
     `name`      VARCHAR(50)  NOT NULL COMMENT '用户名',
     `email`     VARCHAR(100) NOT NULL COMMENT '用户邮箱',
     `password`  VARCHAR(255) NOT NULL COMMENT '密码（建议存储加密后的值）',

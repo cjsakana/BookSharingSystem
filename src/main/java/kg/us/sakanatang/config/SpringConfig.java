@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ComponentScan({"kg.us.sakanatang.service"})
-@Import({JdbcConfig.class, MyBatisConfig.class})
+@Import({JdbcConfig.class, MyBatisPlusConfig.class})
 @EnableTransactionManagement
 public class SpringConfig {
 }

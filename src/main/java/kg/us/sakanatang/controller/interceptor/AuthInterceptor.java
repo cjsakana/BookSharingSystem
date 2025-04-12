@@ -10,6 +10,7 @@ import kg.us.sakanatang.utils.JWTUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 @Component
@@ -29,8 +30,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                     break;
                 }
             }
+            System.out.println(Arrays.toString(cookies));
+            System.out.println(token);
 
+            // Bearer 协议
             token = token.substring(7);
+            System.out.println(token);
+
         } catch (Exception e) {
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(new ObjectMapper().writeValueAsString("401"));

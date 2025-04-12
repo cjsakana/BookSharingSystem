@@ -4,7 +4,6 @@ import kg.us.sakanatang.common.ApiResponse;
 import kg.us.sakanatang.domain.entity.Article;
 import kg.us.sakanatang.domain.vo.ArticleVO;
 import kg.us.sakanatang.service.ArticleService;
-import kg.us.sakanatang.service.impl.ArticleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/api/article")
 public class ArticleController {
     @Autowired
-    ArticleServiceImpl articleServiceImpl;
+    ArticleService articleService;
 
 
     @GetMapping()

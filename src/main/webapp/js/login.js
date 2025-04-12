@@ -1,5 +1,18 @@
 import {login} from "./request/user.js";
 
+
+// 在每一个页面加载时都检查登录状态
+window.addEventListener('load', function () {
+    const storedUser = localStorage.getItem('userData')
+    const loginModal = document.getElementById('loginModal');
+
+    if ((!storedUser) && loginModal) {
+        loginModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+});
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -7,22 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 绑定点击事件
     if (loginBtn) {
-        loginBtn.addEventListener('click', async function() {
+        loginBtn.addEventListener('click', async function () {
             await submitLogin();
         });
-    }
-    window.onload = function () {
-        const token = getCookie('token');
-        if (!token) {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-    };
-
-    // 检查是否有token，如果没有则显示登录弹窗
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
 
@@ -39,21 +39,21 @@ document.addEventListener('DOMContentLoaded', function () {
         // 禁用按钮防止重复提交
         loginBtn.disabled = true;
         loginBtn.textContent = '登录中...';
-
+        console.log(222)
         try {
             // 等待登录请求完成
             const res = await login({
                 email: email,
                 password: password
             });
+            console.log(res)
 
             // 处理响应
-            if (res.code === 200 && res.data.code===200) {
+            if (res.code === 200 && res.data.code === 200) {
                 // 登录成功
                 showMessage('success', '登录成功');
-
-                // 设置token到cookie
-                // document.cookie = `token=${res.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
+                console.log(res.data.data)
+                localStorage.setItem('userData', JSON.stringify(res.data.data))
 
                 // 2秒后刷新页面
                 setTimeout(() => {
