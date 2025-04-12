@@ -63,7 +63,6 @@
         position: relative;
     }
 
-    /* 单个文章项样式 - 优化尺寸 */
     .article-item {
         padding: 15px;
         border-radius: 5px;

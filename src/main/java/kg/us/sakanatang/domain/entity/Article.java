@@ -72,6 +72,11 @@ public class Article implements Serializable {
     private Integer tag;
 
     /**
+     * 点赞数
+     */
+    private Integer likes;
+
+    /**
      * 是否已发布（0:未发布，1:已发布）
      */
     private Integer isPublished;
@@ -102,6 +107,7 @@ public class Article implements Serializable {
             && (this.getContent() == null ? other.getContent() == null : this.getContent().equals(other.getContent()))
             && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
             && (this.getTag() == null ? other.getTag() == null : this.getTag().equals(other.getTag()))
+            && (this.getLikes() == null ? other.getLikes() == null : this.getLikes().equals(other.getLikes()))
             && (this.getIsPublished() == null ? other.getIsPublished() == null : this.getIsPublished().equals(other.getIsPublished()));
     }
 
@@ -120,6 +126,7 @@ public class Article implements Serializable {
         result = prime * result + ((getContent() == null) ? 0 : getContent().hashCode());
         result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
         result = prime * result + ((getTag() == null) ? 0 : getTag().hashCode());
+        result = prime * result + ((getLikes() == null) ? 0 : getLikes().hashCode());
         result = prime * result + ((getIsPublished() == null) ? 0 : getIsPublished().hashCode());
         return result;
     }
@@ -141,11 +148,10 @@ public class Article implements Serializable {
         sb.append(", content=").append(content);
         sb.append(", userId=").append(userId);
         sb.append(", tag=").append(tag);
+        sb.append(", likes=").append(likes);
         sb.append(", isPublished=").append(isPublished);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }
-
-
 }

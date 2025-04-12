@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 /**
 * @author sakana
 * @description 针对表【article(分享书籍表)】的数据库操作Service
-* @createDate 2025-04-07 22:51:35
+* @createDate 2025-04-12 16:28:26
 */
 public interface ArticleService extends IService<Article> {
 

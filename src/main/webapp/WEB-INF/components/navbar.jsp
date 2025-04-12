@@ -4,7 +4,8 @@
 
 %>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<%--<link rel="stylesheet" href="${pageContext.request.contextPath}/css/libs/https_cdnjs.cloudflare.com_ajax_libs_font-awesome_6.4.0_css_all.min.css">--%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
 
 <div class="left-navbar">

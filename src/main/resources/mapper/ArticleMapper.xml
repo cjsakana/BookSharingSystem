@@ -16,6 +16,7 @@
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="userId" column="userId" jdbcType="INTEGER"/>
             <result property="tag" column="tag" jdbcType="INTEGER"/>
+            <result property="likes" column="likes" jdbcType="INTEGER"/>
             <result property="isPublished" column="isPublished" jdbcType="TINYINT"/>
     </resultMap>
 
@@ -23,6 +24,7 @@
         id,createdAt,updatedAt,
         deletedAt,bookName,isbn,
         cover,title,content,
-        userId,tag,isPublished
+        userId,tag,likes,
+        isPublished
     </sql>
 </mapper>

@@ -15,4 +15,5 @@ public class ArticleVO {
     private String content;
     private Integer userId;
     private Integer tag;
+    private Integer likes;
 }
