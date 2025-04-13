@@ -5,6 +5,17 @@ const findArticle = (queryParams) => {
     return request("/article", "GET", null, queryParams)
 }
 
+const getArticleById = (id) => {
+    return request("/" + id, "GET")
+}
+
+const createArticle= (requestBody) => {
+    console.log(queryParams)
+    return request("", "POST", requestBody)
+}
+
 export {
-    findArticle
+    findArticle,
+    getArticleById,
+    createArticle
 }

@@ -30,7 +30,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #e3e3e3;
+            background-color: #ececec;
         }
 
         .editor-container {
@@ -234,7 +234,7 @@
                 "bold", "italic", "heading", "|",
                 "quote", "unordered-list", "ordered-list", "|",
                 "link", "|",
-                "preview", "side-by-side", "fullscreen", "|",
+                "preview", "|",
                 {
                     name: "guide",
                     action: function showHelp() {
