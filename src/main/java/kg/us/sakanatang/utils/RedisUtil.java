@@ -34,6 +34,17 @@ public class RedisUtil {
                 .toString();
     }
 
+    /**
+     * 通用设置过期时间的方法
+     * @param key 键
+     * @param timeout 过期时间
+     * @param unit 时间单位
+     * @return 是否设置成功
+     */
+    public Boolean expire(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.expire(key, timeout, unit);
+    }
+
     // ==================== String 操作 ====================
 
     /**
@@ -204,23 +215,6 @@ public class RedisUtil {
     public Long removeFromZSet(String key, Object... values) {
         return redisTemplate.opsForZSet().remove(key, values);
     }
+
+    
 }
-/*
-// 字符串操作
-redisUtil.set("user:1001", "张三");
-redisUtil.set("token:xyz", "abc123", 30, TimeUnit.MINUTES);
-String userName = (String) redisUtil.get("user:1001");
-redisUtil.del("user:1001");
-
-// Set集合操作
-redisUtil.addToSet("online:users", "user1", "user2", "user3");
-Set<Object> onlineUsers = redisUtil.getSetMembers("online:users");
-boolean isOnline = redisUtil.isSetMember("online:users", "user1");
-redisUtil.removeFromSet("online:users", "user2");
-
-// ZSet排名操作
-redisUtil.addToZSet("leaderboard", "player1", 100);
-redisUtil.addToZSet("leaderboard", "player2", 200);
-Long rank = redisUtil.getZSetRank("leaderboard", "player1"); // 升序排名
-Set<Object> topPlayers = redisUtil.getZSetReverseRange("leaderboard", 0, 9); // 前10名
- */

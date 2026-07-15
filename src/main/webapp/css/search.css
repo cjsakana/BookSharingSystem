@@ -9,7 +9,7 @@
 
 .search-box {
     display: flex;
-    border: 1px solid #ff2442   ;
+    border: 1px solid #ff2442;
     border-radius: 20px;
     overflow: hidden;
     background: #fff;
@@ -70,45 +70,49 @@
     width: calc(30%);
     background: white;
     border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 10;
     display: none;
-    height: auto; /* 高度自适应（由10个 ranking-item 撑开） */
-    overflow: hidden; /* 禁止滚动 */
+    height: auto;
+    /* 高度自适应（由10个 ranking-item 撑开） */
+    overflow: hidden;
+    /* 禁止滚动 */
 }
 
-/*.results-header {*/
-/*    display: flex;*/
-/*    justify-content: space-between;*/
-/*    align-items: center;*/
-/*    margin-bottom: 10px;*/
-/*}*/
-
-/*.close-results {*/
-/*    cursor: pointer;*/
-/*    font-size: 20px;*/
-/*}*/
 
 .ranking-item {
     display: flex;
     align-items: center;
-    padding: 10px 0;
-    margin-left: 10px;
+    margin: 0 10px;
     border-bottom: 1px solid #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: #f7f7fa;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ranking-item:hover {
+    background: #e6f7ff;
 }
 
 .rank-number {
-    width: 24px;
-    height: 24px;
-}
-
-.rank-content {
-    flex: 1;
+    font-weight: bold;
+    color: #1890ff;
+    margin-right: 12px;
+    width: 28px;
+    text-align: center;
 }
 
 .rank-title {
     font-weight: bold;
     margin-bottom: 3px;
+    font-size: 15px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .rank-desc {

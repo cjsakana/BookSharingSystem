@@ -25,15 +25,15 @@
 
     <!-- 分类标签 -->
     <div class="category-tags">
-        <span class="tag active" data-category="rec">推荐</span>
-        <span class="tag" data-category="emo">情感</span>
-        <span class="tag" data-category="coa">成长</span>
-        <span class="tag" data-category="soc">社会</span>
-        <span class="tag" data-category="psy">心理</span>
-        <span class="tag" data-category="sci">科幻</span>
-        <span class="tag" data-category="phi">哲学</span>
-        <span class="tag" data-category="his">历史</span>
-        <span class="tag" data-category="oth">其他</span>
+        <span class="tag active" data-category=0>推荐</span>
+        <span class="tag" data-category=1>情感</span>
+        <span class="tag" data-category=2>成长</span>
+        <span class="tag" data-category=3>社会</span>
+        <span class="tag" data-category=4>心理</span>
+        <span class="tag" data-category=5>科幻</span>
+        <span class="tag" data-category=6>哲学</span>
+        <span class="tag" data-category=7>历史</span>
+        <span class="tag" data-category=8>其他</span>
     </div>
 
     <!-- 搜索结果 -->

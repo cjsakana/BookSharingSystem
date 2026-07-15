@@ -3,286 +3,75 @@ package kg.us.sakanatang.controller;
 import kg.us.sakanatang.common.ApiResponse;
 import kg.us.sakanatang.domain.entity.Article;
 import kg.us.sakanatang.domain.vo.ArticleVO;
+import kg.us.sakanatang.domain.vo.RecommendVO;
 import kg.us.sakanatang.service.ArticleService;
+import kg.us.sakanatang.utils.RedisUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Date;
+import org.springframework.web.multipart.MultipartFile;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/article")
 public class ArticleController {
     @Autowired
-    ArticleService articleService;
-
+    private ArticleService articleService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @GetMapping()
-    public ArrayList<Article> getArticle(@RequestParam(value = "content", defaultValue = "") String content,
-                                         @RequestParam(value = "tag", defaultValue = "0") int tag,
-                                         @RequestParam(value = "page", defaultValue = "1") int page,
-                                         @RequestParam(value = "size", defaultValue = "12") int size) {
-        if (page == 1) {
-            return new ArrayList<>(Arrays.asList(
-                    new Article() {{
-                        setId(1);
-                        setCreatedAt(new Date(1673764200000L)); // 2023-01-15 09:30:00
-                        setUpdatedAt(new Date(1674203100000L)); // 2023-01-20 14:25:00
-                        setDeletedAt(null);
-                        setBookName("三体");
-                        setIsbn("9787536692930");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("《三体》中的宇宙社会学思考");
-                        setContent("《三体》系列展示了宇宙中可能存在的黑暗森林法则...");
-                        setUserId(101);
-                        setTag(1);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(2);
-                        setCreatedAt(new Date(1676020800000L)); // 2023-02-10 11:20:00
-                        setUpdatedAt(new Date(1676464800000L)); // 2023-02-15 16:40:00
-                        setDeletedAt(null);
-                        setBookName("活着");
-                        setIsbn("9787506365437");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("《活着》中的人生哲学");
-                        setContent("余华的《活着》通过福贵的一生展现了生命的韧性...");
-                        setUserId(102);
-                        setTag(2);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(3);
-                        setCreatedAt(new Date(1678011300000L)); // 2023-03-05 14:15:00
-                        setUpdatedAt(new Date(1678011300000L)); // 2023-03-05 14:15:00
-                        setDeletedAt(null);
-                        setBookName("人类简史");
-                        setIsbn("9787508647357");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("从《人类简史》看认知革命");
-                        setContent("赫拉利提出的认知革命改变了人类的发展轨迹...");
-                        setUserId(103);
-                        setTag(3);
-                        setIsPublished(0);
-                    }},
-                    new Article() {{
-                        setId(4);
-                        setCreatedAt(new Date(1681814700000L)); // 2023-04-18 10:45:00
-                        setUpdatedAt(new Date(1681983000000L)); // 2023-04-20 09:30:00
-                        setDeletedAt(null);
-                        setBookName("小王子");
-                        setIsbn("9787020042494");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("《小王子》的成人童话世界");
-                        setContent("这本写给大人的童话蕴含着深刻的哲学思考...");
-                        setUserId(104);
-                        setTag(4);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(5);
-                        setCreatedAt(new Date(1684750800000L)); // 2023-05-22 16:20:00
-                        setUpdatedAt(new Date(1685006100000L)); // 2023-05-25 11:15:00
-                        setDeletedAt(null);
-                        setBookName("白夜行");
-                        setIsbn("9787544258609");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("东野圭吾《白夜行》的叙事艺术");
-                        setContent("小说中复杂的叙事结构和人物关系令人叹服...");
-                        setUserId(105);
-                        setTag(5);
-                        setIsPublished(1);
-                    }},
-                    new Article() {
-                        {
-                            setId(6);
-                            setCreatedAt(new Date(1688116200000L)); // 2023-06-30 13:10:00
-                            setUpdatedAt(new Date(1688539500000L)); // 2023-07-05 08:45:00
-                            setDeletedAt(null);
-                            setBookName("Python编程从入门到实践");
-                            setIsbn("9787115428028");
-                            setCover("http://8.138.85.156/assets/bss/default-img.png");
-                            setTitle("Python学习心得分享");
-                            setContent("这本书是Python初学者的绝佳选择...");
-                            setUserId(106);
-                            setTag(6);
-                            setIsPublished(1);
-                        }
-                    },
-                    new Article() {{
-                        setId(7);
-                        setCreatedAt(new Date(1689161400000L)); // 2023-07-12 15:30:00
-                        setUpdatedAt(new Date(1689161400000L)); // 2023-07-12 15:30:00
-                        setDeletedAt(null);
-                        setBookName("百年孤独");
-                        setIsbn("9787544258975");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("马尔克斯的魔幻现实主义");
-                        setContent("布恩迪亚家族七代人的兴衰展现了拉美的历史...");
-                        setUserId(107);
-                        setTag(2);
-                        setIsPublished(0);
-                    }},
-                    new Article() {{
-                        setId(8);
-                        setCreatedAt(new Date(1691486100000L)); // 2023-08-08 09:15:00
-                        setUpdatedAt(new Date(1691662800000L)); // 2023-08-10 14:20:00
-                        setDeletedAt(null);
-                        setBookName("时间简史");
-                        setIsbn("9787535732309");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("霍金《时间简史》读后感");
-                        setContent("这本书让我对宇宙和时间的理解更加深入...");
-                        setUserId(108);
-                        setTag(3);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(9);
-                        setCreatedAt(new Date(1695098400000L)); // 2023-09-19 11:40:00
-                        setUpdatedAt(new Date(1695357000000L)); // 2023-09-22 10:30:00
-                        setDeletedAt(null);
-                        setBookName("围城");
-                        setIsbn("9787020090006");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("《围城》中的现代人困境");
-                        setContent("钱钟书笔下的方鸿渐形象极具代表性...");
-                        setUserId(109);
-                        setTag(2);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(10);
-                        setCreatedAt(new Date(1698231000000L)); // 2023-10-25 14:50:00
-                        setUpdatedAt(new Date(1698495300000L)); // 2023-10-28 16:15:00
-                        setDeletedAt(null);
-                        setBookName("明朝那些事儿");
-                        setIsbn("9787506341271");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("通俗历史写作的典范");
-                        setContent("这本书让历史变得生动有趣...");
-                        setUserId(110);
-                        setTag(7);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(13);
-                        setCreatedAt(new Date(1698511800000L)); // 2023-10-28 23:50:00
-                        setUpdatedAt(new Date(1698776100000L)); // 2023-10-31 01:15:00
-                        setDeletedAt(null);
-                        setBookName("活着");
-                        setIsbn("9787506365437");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("苦难与坚韧的生命");
-                        setContent("人是为了活着本身而活着...");
-                        setUserId(113);
-                        setTag(2);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(14);
-                        setCreatedAt(new Date(1698605400000L)); // 2023-10-30 02:50:00
-                        setUpdatedAt(new Date(1698869700000L)); // 2023-11-02 04:15:00
-                        setDeletedAt(null);
-                        setBookName("百年孤独");
-                        setIsbn("9787544258974");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("魔幻现实主义的巅峰");
-                        setContent("布恩迪亚家族的百年兴衰...");
-                        setUserId(114);
-                        setTag(4);
-                        setIsPublished(1);
-                    }}
-            ));
-        } else if (page == 2) {
-            return new ArrayList<>(Arrays.asList(
-                    new Article() {{
-                        setId(10);
-                        setCreatedAt(new Date(1698231000000L)); // 2023-10-25 14:50:00
-                        setUpdatedAt(new Date(1698495300000L)); // 2023-10-28 16:15:00
-                        setDeletedAt(null);
-                        setBookName("明朝那些事儿");
-                        setIsbn("9787506341271");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("通俗历史写作的典范");
-                        setContent("这本书让历史变得生动有趣...");
-                        setUserId(110);
-                        setTag(7);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(11);
-                        setCreatedAt(new Date(1698324600000L)); // 2023-10-26 17:50:00
-                        setUpdatedAt(new Date(1698588900000L)); // 2023-10-29 19:15:00
-                        setDeletedAt(null);
-                        setBookName("人类简史");
-                        setIsbn("9787508647357");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("从动物到上帝");
-                        setContent("一部颠覆认知的人类发展史...");
-                        setUserId(111);
-                        setTag(3);
-                        setIsPublished(1);
-                    }},
-                    new Article() {{
-                        setId(12);
-                        setCreatedAt(new Date(1698418200000L)); // 2023-10-27 20:50:00
-                        setUpdatedAt(new Date(1698682500000L)); // 2023-10-30 22:15:00
-                        setDeletedAt(null);
-                        setBookName("三体");
-                        setIsbn("9787536692930");
-                        setCover("http://8.138.85.156/assets/bss/default-img.png");
-                        setTitle("黑暗森林法则");
-                        setContent("宇宙就是一座黑暗森林...");
-                        setUserId(112);
-                        setTag(5);
-                        setIsPublished(1);
-                    }}
-
-            ));
-        } else {
-            return new ArrayList<>();
-        }
+    public ArrayList<ArticleVO> getArticle(@RequestParam(value = "query", defaultValue = "") String query,
+                                           @RequestParam(value = "tag", defaultValue = "0") int tag,
+                                           @RequestParam(value = "page", defaultValue = "1") int page,
+                                           @RequestParam(value = "size", defaultValue = "10") int size) {
+        List<ArticleVO> articles = articleService.getArticleList(page, size, tag, query);
+        return (ArrayList<ArticleVO>) articles;
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<Article> getPersonArticle(
-            @RequestAttribute(value = "id", required = true) int id,
+    public ApiResponse<ArticleVO> getArticle(
             @PathVariable(value = "id") int articleId) {
         try {
-            Article article=new Article();
-            return ApiResponse.success(article);
-        }catch (Exception e){
-            return ApiResponse.fail(500,"获取文章失败");
+            ArticleVO articleVO = articleService.getArticleById(articleId);
+            if (articleVO == null) {
+                return ApiResponse.fail(500, "获取文章失败");
+            }
+            return ApiResponse.success(articleVO);
+        } catch (Exception e) {
+            return ApiResponse.fail(500, "获取文章失败");
         }
     }
 
 
     @PostMapping()
     public ApiResponse<String> create(@RequestAttribute(value = "id", required = true) int id,
-                                      @RequestBody Map<String, String> params) {
+                                      @RequestBody Map<String, Object> params) {
         try {
             if (params == null) {
                 return ApiResponse.fail(400, "请求参数不能为空");
             }
 
-            String bookName = params.get("bookName");
-            String cover = params.get("cover");
-            String title = params.get("title");
-            String content = params.get("content");
-            if (bookName == null || cover == null || title == null || content == null) {
+            String bookName = (String) params.get("bookName");
+            String cover = (String) params.get("cover");
+            String title = (String) params.get("title");
+            String content = (String) params.get("content");
+            if (bookName == null || title == null || content == null) {
                 return ApiResponse.fail(400, "必须参数不能为空");
             }
-            if (bookName.isEmpty() || cover.isEmpty() || title.isEmpty() || content.isEmpty()) {
+            if (bookName.isEmpty() || title.isEmpty() || content.isEmpty()) {
                 return ApiResponse.fail(400, "必须参数不能为空");
             }
 
-            String tagStr = params.get("tag");
-            int tag = Integer.parseInt(tagStr);
-            String isbn = params.get("isbn");
+            int isPublished = (int) params.get("isPublished");
+            int tag = (int) params.get("tag");
+            String isbn = (String) params.get("isbn");
 
             Article article = new Article();
             article.setBookName(bookName);
@@ -292,9 +81,13 @@ public class ArticleController {
             article.setContent(content);
             article.setUserId(id);
             article.setTag(tag);
+            article.setIsPublished(isPublished);
 
-//            articleServiceImpl.
+            boolean ok = articleService.createArticle(article);
+            if (!ok) {
+                return ApiResponse.fail(500, "创建文章失败");
 
+            }
             return ApiResponse.success();
         } catch (Exception e) {
             return ApiResponse.fail(500, "创建文章失败");
@@ -304,7 +97,7 @@ public class ArticleController {
     @PutMapping("/{id}")
     public ApiResponse<String> update(@RequestAttribute(value = "id", required = true) int userid,
                                       @PathVariable(value = "id") int articleId,
-                                      @RequestBody Map<String, String> params) {
+                                      @RequestBody Map<String, Object> params) {
         try {
             if (params == null) {
                 return ApiResponse.fail(400, "请求参数不能为空");
@@ -312,77 +105,164 @@ public class ArticleController {
 
             // 查询图书信息
             Article article = new Article();
+            ArticleVO articleVO = articleService.getArticleById(articleId);
+            if (articleVO.getUserId() != userid) {
+                return ApiResponse.fail(401, "无权限");
+            }
+            System.out.println(articleVO);
+            BeanUtils.copyProperties(articleVO, article);
+            System.out.println(222);
 
-            // 鉴权
-            // 后面的得重写
 
-            String bookName = params.get("bookName");
-            String cover = params.get("cover");
-            String title = params.get("title");
-            String content = params.get("content");
-            if (bookName == null || cover == null || title == null || content == null) {
+            String bookName = (String) params.get("bookName");
+            String cover = (String) params.get("cover");
+            String title = (String) params.get("title");
+            String content = (String) params.get("content");
+            if (bookName == null || title == null || content == null) {
                 return ApiResponse.fail(400, "必须参数不能为空");
             }
-            if (bookName.isEmpty() || cover.isEmpty() || title.isEmpty() || content.isEmpty()) {
+            if (bookName.isEmpty() || title.isEmpty() || content.isEmpty()) {
                 return ApiResponse.fail(400, "必须参数不能为空");
             }
 
-            String tagStr = params.get("tag");
-            int tag = Integer.parseInt(tagStr);
+            int tag = (int) params.get("tag");
+            int isPublished = (int) params.get("isPublished");
 
             article.setBookName(bookName);
             article.setCover(cover);
             article.setTitle(title);
             article.setContent(content);
             article.setTag(tag);
+            article.setIsPublished(isPublished);
+            article.setCover("https://sakanatang.dpdns.org/default-img.png");
 
-//            articleServiceImpl.
+            System.out.println(111);
+            articleService.updateArticle(article);
 
             return ApiResponse.success();
         } catch (Exception e) {
+            e.printStackTrace();
             return ApiResponse.fail(500, "修改文章失败");
         }
     }
 
-
-    @PostMapping("/publish")
-    public ApiResponse<String> publish(@RequestAttribute(value = "id", required = true) int userid,
-                                       @RequestBody Map<String, String> params) {
+    @PutMapping("/{id}/publish")
+    public ApiResponse<Boolean> publishArticle(@PathVariable Integer id) {
         try {
-            if (params == null) {
-                return ApiResponse.fail(400, "请求参数不能为空");
-            }
-
-            String idStr = params.get("id");
-            int id = Integer.parseInt(idStr);
-            String isPublishedStr = params.get("isPublished");
-            int isPublished = Integer.parseInt(isPublishedStr);
-
-
-//            articleServiceImpl.
-
+            articleService.togglePublishStatus(id, true);
             return ApiResponse.success();
         } catch (Exception e) {
             return ApiResponse.fail(500, "发表文章失败");
         }
     }
 
+    @PutMapping("/{id}/unpublish")
+    public ApiResponse<Boolean> unpublishArticle(@PathVariable Integer id) {
+        try {
+            articleService.togglePublishStatus(id, false);
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.fail(500, "取消发表文章失败");
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ApiResponse<String> del(@RequestAttribute(value = "id", required = true) int userid,
-                                       @PathVariable(value = "id") int articleId,
-                                       @RequestBody Map<String, String> params) {
+                                   @RequestAttribute(value = "role", required = true) int role,
+                                   @PathVariable(value = "id") int articleId) {
         try {
-            if (params == null) {
-                return ApiResponse.fail(400, "请求参数不能为空");
-            }
-
             // 删除
-//            articleServiceImpl.
-// 清缓存
+            articleService.deleteArticle(articleId);
 
             return ApiResponse.success();
         } catch (Exception e) {
             return ApiResponse.fail(500, "删除文章失败");
+        }
+    }
+
+    @GetMapping("/getUserArticle")
+    public List<ArticleVO> getPersonalArticle(@RequestAttribute(value = "id", required = true) int userid,
+                                              @RequestParam(value = "page", defaultValue = "1") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size) {
+        return articleService.getUserArticles(userid, page, size);
+    }
+
+    @GetMapping("/recommend")
+    public ApiResponse<List<RecommendVO>> recommend() {
+        String key = "BookSharingSystem::recommend";
+        // 先从缓存获取
+        Set<Object> recommendVOSet = redisUtil.getZSetReverseRange(key, 0, -1);
+        List<RecommendVO> recommendVOS;
+        if (recommendVOSet != null && !recommendVOSet.isEmpty()) {
+            // 缓存命中，类型转换
+            recommendVOS = new ArrayList<>();
+            for (Object obj : recommendVOSet) {
+                if (obj instanceof RecommendVO) {
+                    recommendVOS.add((RecommendVO) obj);
+                }
+            }
+        } else {
+            // 缓存未命中，从服务获取
+            recommendVOS = articleService.recommend();
+            // 写入缓存并设置1小时过期
+            if (recommendVOS != null && !recommendVOS.isEmpty()) {
+                for (RecommendVO vo : recommendVOS) {
+                    redisUtil.addToZSet(key, vo, vo.getId()); // 分数以id，保证顺序
+                }
+                redisUtil.expire(key, 1, java.util.concurrent.TimeUnit.HOURS);
+            }
+        }
+        return ApiResponse.success(recommendVOS);
+    }
+
+    @PostMapping("/uploadCover")
+    public ApiResponse<String> uploadCover(@RequestAttribute(value = "id", required = true) int userid,
+                                           @RequestParam("cover") MultipartFile file,
+                                           HttpSession session) {
+        // 获取项目根路径
+        String uploadPath = "C:\\Users\\sakana\\Desktop\\java学习\\广软\\BookSharingSystem\\src\\main\\webapp\\images\\cover\\";
+        System.out.println(uploadPath);
+
+        if (file.isEmpty()) {
+            return ApiResponse.fail(500, "请上传图片");
+        }
+        try {
+            // 原始文件名
+            String originalFilename = file.getOriginalFilename();
+            // 文件后缀
+            String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+            // 生成固定文件名（基于用户会话）
+            String sessionId = session.getId();
+            String newFilename = String.valueOf(userid)+"_" + sessionId + suffix;
+
+            // 创建目录
+            File dir = new File(uploadPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // 删除用户之前的图片（如果存在）
+            File[] existingFiles = dir.listFiles((d, name)
+                    -> name.startsWith(userid + "_" + sessionId));
+            if (existingFiles != null) {
+                for (File existingFile : existingFiles) {
+                    existingFile.delete();
+                }
+            }
+
+            // 保存新文件
+            File dest = new File(uploadPath + newFilename);
+            file.transferTo(dest);
+
+            // 返回访问路径
+            String accessUrl = "http://localhost:9090/images/cover/" + newFilename;
+
+            return ApiResponse.success(accessUrl);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ApiResponse.fail(500, "上传失败: " + e.getMessage());
         }
     }
 }

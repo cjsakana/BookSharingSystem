@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import javax.servlet.Filter;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletRegistration;
 
 @Configuration
 public class ServletConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -30,5 +32,14 @@ public class ServletConfig extends AbstractAnnotationConfigDispatcherServletInit
         encodingFilter.setEncoding("UTF-8");
         encodingFilter.setForceEncoding(true);
         return new Filter[]{encodingFilter};
+    }
+
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        //文件上传
+        registration.setMultipartConfig(
+                // 5Mb
+                new MultipartConfigElement("",1024*1024*5,1024*1024*5,0)
+        );
     }
 }

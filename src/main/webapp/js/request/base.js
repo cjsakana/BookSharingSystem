@@ -18,7 +18,8 @@ async function request(url, method = 'GET', requestBody = null, queryParams = nu
             headers: {
                 'Content-Type': 'application/json',
                 // 'Authorization': `Bearer ${token}`
-            }
+            },
+            credentials: 'include' 
         };
 
         // 如果是GET/HEAD请求，不添加body
@@ -26,7 +27,16 @@ async function request(url, method = 'GET', requestBody = null, queryParams = nu
             options.body = JSON.stringify(requestBody);
         }
         console.log(fullUrl)
+        
+        // 创建 AbortController 用于超时控制
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+
+        // 添加 signal 到 options
+        options.signal = controller.signal;
+
         const response = await fetch(fullUrl, options);
+        clearTimeout(timeoutId); // 清除超时计时器
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -40,6 +50,10 @@ async function request(url, method = 'GET', requestBody = null, queryParams = nu
         return await response.json();
     } catch (error) {
         console.error('Request failed:', error);
+        // 处理超时错误
+        if (error.name === 'AbortError') {
+            throw new Error('请求超时，请稍后重试');
+        }
         throw error;
     }
 }

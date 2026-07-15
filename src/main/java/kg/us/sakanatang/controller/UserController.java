@@ -4,10 +4,7 @@ import kg.us.sakanatang.common.ApiResponse;
 import kg.us.sakanatang.domain.entity.User;
 import kg.us.sakanatang.domain.vo.UserVO;
 import kg.us.sakanatang.service.UserService;
-import kg.us.sakanatang.utils.CookieUtils;
-import kg.us.sakanatang.utils.JWTUtil;
-import kg.us.sakanatang.utils.RedisUtil;
-import kg.us.sakanatang.utils.Validator;
+import kg.us.sakanatang.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,6 +68,7 @@ public class UserController {
             user.setName(name.trim());
             user.setSex(sex);
             user.setRole(0);
+            user.setAvatar("https://gips3.baidu.com/it/u=3407808967,3628394833&fm=3074&app=3074&f=JPEG?w=2560&h=2530&type=normal&func=");
             user.setSignature(params.get("signature"));
 
 
@@ -180,7 +178,7 @@ public class UserController {
     @PutMapping("")
     public ApiResponse<UserVO> updateUser(
             @RequestAttribute(value = "id", required = true) int id,
-            @RequestBody Map<String, String> params) {
+            @RequestBody Map<String, Object> params) {
         try {
             if (params == null || params.isEmpty()) {
                 return ApiResponse.fail(400, "更新内容不能为空");
@@ -191,21 +189,17 @@ public class UserController {
             user.setId(id);
 
             if (params.containsKey("name")) {
-                String name = params.get("name").trim();
+                String name = ((String) params.get("name")).trim();
                 user.setName(name);
             }
-            if (params.containsKey("password")) {
-                String password = params.get("password").trim();
-                user.setPassword(password);
-            }
             if (params.containsKey("sex")) {
-                int sex = Integer.parseInt(params.get("sex"));
+                int sex = (int)params.get("sex");
                 if (sex >= 0 && sex <= 2) {
                     user.setSex(sex);
                 }
             }
             if (params.containsKey("signature")) {
-                String signature = params.get("signature").trim();
+                String signature = ((String)params.get("signature")).trim();
                 user.setSignature(signature);
             }
 
@@ -220,6 +214,7 @@ public class UserController {
 
             return ApiResponse.success(userVO);
         } catch (Exception e) {
+            e.printStackTrace();
             return ApiResponse.fail(500, "更新用户信息失败");
         }
     }
@@ -260,12 +255,13 @@ public class UserController {
 
     // 注销用户
     @DeleteMapping("")
-    public ApiResponse<Void> deleteUser(@RequestAttribute(value = "id", required = true) int id, HttpServletResponse response) {
+    public ApiResponse<Void> deleteUser(@RequestAttribute(value = "id", required = true) int id,
+                                        HttpServletResponse response) {
         try {
-            boolean success = userService.deleteUser(id);
-            if (!success) {
-                return ApiResponse.fail(500, "注销用户失败");
-            }
+//            boolean success = userService.deleteUser(id);
+//            if (!success) {
+//                return ApiResponse.fail(500, "注销用户失败");
+//            }
 
             // 就应该清空cookie
             CookieUtils.clearCookie(response, "token");
@@ -273,5 +269,60 @@ public class UserController {
         } catch (Exception e) {
             return ApiResponse.fail(500, "注销用户失败");
         }
+    }
+
+
+    @PostMapping("/admin/login")
+    public ApiResponse<UserVO> adminLogin(@RequestBody Map<String, String> params,
+                                          HttpServletResponse response) {
+        try {
+            if (params == null) {
+                return ApiResponse.fail(400, "请求参数不能为空");
+            }
+
+            String email = params.get("email");
+            String password = params.get("password");
+            if (email == null || password == null) {
+                return ApiResponse.fail(400, "邮箱和密码不能为空");
+            }
+            if (email.isEmpty() || password.isEmpty()) {
+                return ApiResponse.fail(400, "邮箱和密码不能为空");
+            }
+
+            boolean isEmail = Validator.isValidEmail(email);
+            if (!isEmail) {
+                return ApiResponse.fail(400, "邮箱不正确");
+            }
+
+
+            UserVO userVO = userService.login(email, password);
+            if (userVO == null) {
+                return ApiResponse.fail(401, "邮箱或密码错误");
+            }
+            if(userVO.getRole()!=1){
+                return ApiResponse.fail(401, "无权");
+            }
+
+            String token = JWTUtil.getToken(new ConcurrentHashMap<>() {{
+                put("id", userVO.getId());
+                put("role", userVO.getRole());
+            }});
+            CookieUtils.setCookie(response, "token", "Bearer+" + token);
+
+            return ApiResponse.success(userVO);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ApiResponse.fail(500, "登录失败，请重试"+e.getMessage());
+        }
+    }
+
+    // 获取当前在线用户数量
+    @GetMapping("/onlineCount")
+    public ApiResponse<Integer> getOnlineUserCount(@RequestAttribute(value = "role", required = true) int role) {
+        if(role!=1){
+            return ApiResponse.fail(401,"fail");
+        }
+        int count = OnlineUserCounter.getOnlineUserCount();
+        return ApiResponse.success(count);
     }
 }

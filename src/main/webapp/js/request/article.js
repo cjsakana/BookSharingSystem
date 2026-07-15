@@ -1,21 +1,45 @@
 import request from "./base.js";
 
-const findArticle = (queryParams) => {
-    console.log(queryParams)
-    return request("/article", "GET", null, queryParams)
+const prefixURL = "/article"
+
+const apiFindArticle = (queryParams) => {
+    return request(prefixURL, "GET", null, queryParams)
 }
 
-const getArticleById = (id) => {
-    return request("/" + id, "GET")
+const apiFindUserArticle = (queryParams) => {
+    return request(prefixURL+"/getUserArticle", "GET", null, queryParams)
 }
 
-const createArticle= (requestBody) => {
-    console.log(queryParams)
-    return request("", "POST", requestBody)
+const apiGetArticleById = (id) => {
+    return request(prefixURL + `/${id}`, "GET")
+}
+
+const apiCreateArticle= (requestBody) => {
+    return request(prefixURL, "POST", requestBody)
+}
+
+const apiUpdateArticle= (id,requestBody) => {
+    return request(prefixURL+`/${id}`, "PUT", requestBody)
+}
+
+const apiRecommendArticle= () => {
+    return request(prefixURL+`/recommend`, "GET")
+}
+
+const apiArticleUnpublish= (articleId) => {
+    return request(prefixURL+`/${articleId}/unpublish`, "PUT")
+}
+const apiArticleDel= (articleId) => {
+    return request(prefixURL+`/${articleId}`, "DELETE")
 }
 
 export {
-    findArticle,
-    getArticleById,
-    createArticle
+    apiFindArticle,
+    apiGetArticleById,
+    apiCreateArticle,
+    apiFindUserArticle,
+    apiUpdateArticle,
+    apiRecommendArticle,
+    apiArticleUnpublish,
+    apiArticleDel
 }

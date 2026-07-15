@@ -39,20 +39,19 @@ document.addEventListener('DOMContentLoaded', function () {
         // 禁用按钮防止重复提交
         loginBtn.disabled = true;
         loginBtn.textContent = '登录中...';
-        console.log(222)
         try {
             // 等待登录请求完成
             const res = await login({
                 email: email,
                 password: password
             });
-            console.log(res)
+            // console.log(res)
 
             // 处理响应
             if (res.code === 200 && res.data.code === 200) {
                 // 登录成功
                 showMessage('success', '登录成功');
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 localStorage.setItem('userData', JSON.stringify(res.data.data))
 
                 // 2秒后刷新页面

@@ -5,9 +5,7 @@ import kg.us.sakanatang.domain.entity.User;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,10 +13,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/test")
 public class T {
-
     @GetMapping("")
-    public ApiResponse<T> hello() {
-        return ApiResponse.fail(500, "用户注册失败");
+    public ApiResponse<String> hello(int a) {
+        System.out.println(a);
+        return ApiResponse.success("Hello word "+a);
     }
-
+    @PostMapping("")
+    public ApiResponse<String> hello2(int a) {
+        System.out.println(a);
+        return ApiResponse.success("Hello word2 "+a);
+    }
 }

@@ -12,19 +12,21 @@
 <head>
     <title>文章编辑</title>
     <meta charset="UTF-8">
+
     <!-- 引入jQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/libs/jquery.js"></script>
 
     <!-- 引入Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="${pageContext.request.contextPath}/css/libs/bootstrap.min.css" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/js/libs/bootstrap.bundle.min.js"></script>
 
     <!-- 引入Font Awesome图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/libs/all.min.css">
 
     <!-- 引入简化版Markdown编辑器 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.16.1/dist/easymde.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/easymde@2.16.1/dist/easymde.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/libs/easymde.min.css">
+    <script src="${pageContext.request.contextPath}/js/libs/easymde.min.js"></script>
+
 
     <style>
         body {
@@ -146,8 +148,13 @@
 
         <!-- 表单字段 -->
         <div class="form-group">
-            <label for="title" class="form-label">书名</label>
+            <label for="title" class="form-label">文章标题</label>
             <input type="text" id="title" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="bookName" class="form-label">书名</label>
+            <input type="text" id="bookName" class="form-control" required>
         </div>
 
         <div class="form-group">
@@ -158,14 +165,14 @@
         <div class="form-group">
             <label for="tag" class="form-label">标签</label>
             <select id="tag" class="form-select">
-                <option value="1">情感</option>
-                <option value="2">成长</option>
-                <option value="3">社会</option>
-                <option value="4">心理</option>
-                <option value="5">科幻</option>
-                <option value="6">哲学</option>
-                <option value="7">历史</option>
-                <option value="8">其他</option>
+                <option value=1>情感</option>
+                <option value=2>成长</option>
+                <option value=2>社会</option>
+                <option value=4>心理</option>
+                <option value=5>科幻</option>
+                <option value=6>哲学</option>
+                <option value=7>历史</option>
+                <option value=8>其他</option>
             </select>
         </div>
 
@@ -203,7 +210,7 @@
         </div>
 
         <div class="editor-footer">
-            <!-- 添加帮助按钮 - 已恢复 -->
+            <!-- 添加帮助按钮 -->
             <button type="button" id="help-btn" class="btn btn-outline-info me-auto">
                 <i class="fas fa-question-circle me-1"></i>格式帮助
             </button>
@@ -217,129 +224,6 @@
     </form>
 </div>
 
-<script>
-    function confirmBack() {
-        if(confirm("确定要返回吗？未保存的文章内容将会丢失！")) {
-            window.history.back(); // 返回上一页
-        }
-    }
-
-    $(function () {
-        // 初始化简易Markdown编辑器
-        var easyMDE = new EasyMDE({
-            element: document.getElementById('markdown-content'),
-            autoDownloadFontAwesome: false,
-            spellChecker: false,
-            toolbar: [
-                "bold", "italic", "heading", "|",
-                "quote", "unordered-list", "ordered-list", "|",
-                "link", "|",
-                "preview", "|",
-                {
-                    name: "guide",
-                    action: function showHelp() {
-                        $('#formatting-help').toggle();
-                    },
-                    className: "fas fa-question-circle",
-                    title: "格式帮助"
-                }
-            ],
-            placeholder: "请输入文章正文...",
-            minHeight: "300px",
-            autosave: {
-                enabled: false
-            }
-        });
-
-        // 图片上传处理 - 已修复
-        $('#image-upload').change(function (e) {
-            if (e.target.files.length > 0) {
-                var file = e.target.files[0];
-                // 这里可以添加图片上传逻辑
-                console.log('已选择图片:', file);
-
-                // 显示图片预览
-                var reader = new FileReader();
-                reader.onload = function (event) {
-                    $('.upload-area').html(
-                        '<img src="' + event.target.result + '" class="img-thumbnail" style="max-height: 200px;">' +
-                        '<input type="file" id="image-upload" accept="image/*" style="display:none;">'
-                    );
-                    // 重新绑定事件
-                    $('#image-upload').change(arguments.callee);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // 帮助按钮点击事件 - 已恢复
-        $('#help-btn').click(function () {
-            $('#formatting-help').toggle();
-        });
-
-        // 保存按钮点击事件 (isPublished = 0)
-        $('#save-btn').click(function () {
-            submitForm(0);
-        });
-
-        // 提交按钮点击事件 (isPublished = 1)
-        $('#submit-btn').click(function () {
-            submitForm(1);
-        });
-
-        // 表单提交函数
-        function submitForm(isPublished) {
-            var formData = {
-                title: $('#title').val(),
-                content: easyMDE.value(),
-                tag: $('#tag').val(),
-                isbn: $('#isbn').val(),
-                isPublished: isPublished
-            };
-
-            // 验证必填字段
-            if (!formData.title) {
-                alert('请输入书名');
-                return;
-            }
-
-            if (!formData.content) {
-                alert('请输入正文内容');
-                return;
-            }
-
-            // 这里替换为实际的后端API地址
-            var apiUrl = '/api/articles';
-
-            // 显示加载状态
-            var submitBtn = $('#submit-btn');
-            var originalText = submitBtn.html();
-            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>处理中...');
-
-            // 发送AJAX请求
-            $.ajax({
-                url: apiUrl,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(formData),
-                success: function (response) {
-                    // 显示成功消息
-                    alert(isPublished ? '文章提交成功！' : '文章已保存为草稿！');
-
-                    // 如果是提交操作，可以跳转到文章列表页
-                    if (isPublished) {
-                        window.location.href = '/articles';
-                    }
-                },
-                error: function (xhr) {
-                    alert('操作失败: ' + (xhr.responseJSON?.message || '服务器错误'));
-                },
-                complete: function () {
-                    submitBtn.prop('disabled', false).html(originalText);
-                }
-            });
-        }
-    });
-</script>
+<script type="module" src="${pageContext.request.contextPath}/js/publish.js"></script>
 </body>
 </html>

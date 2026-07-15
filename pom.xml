@@ -20,11 +20,11 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-core</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
@@ -56,12 +56,6 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- Mybatis -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.mybatis</groupId>-->
-        <!--            <artifactId>mybatis</artifactId>-->
-        <!--            <version>3.5.6</version>-->
-        <!--        </dependency>-->
         <!-- Mybatis-Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -166,22 +160,7 @@
             <version>2.3.2</version>
         </dependency>
 
-        <!-- Jedis Redis客户端 -->
-<!--        <dependency>-->
-<!--            <groupId>redis.clients</groupId>-->
-<!--            <artifactId>jedis</artifactId>-->
-<!--            <version>3.7.0</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Spring Data Redis &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.data</groupId>-->
-<!--            <artifactId>spring-data-redis</artifactId>-->
-<!--            <version>2.5.5</version>-->
-<!--        </dependency>-->
-
         <!-- Redis 相关依赖 -->
-        <!-- Redis 相关依赖 - 调整为与Spring 5.2.0兼容的版本 -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -197,6 +176,15 @@
             <artifactId>commons-pool2</artifactId>
             <version>2.6.0</version>
         </dependency>
+
+<!--    s3    -->
+<!--        <dependency>-->
+<!--            <groupId>com.amazonaws</groupId>-->
+<!--            <artifactId>aws-java-sdk-s3</artifactId>-->
+<!--            <version>1.11.300</version>-->
+<!--        </dependency>-->
+
+
 
         <!-- spring-test -->
         <dependency>
