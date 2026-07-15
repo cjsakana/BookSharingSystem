@@ -1,4 +1,4 @@
-import {apiFindArticle,apiRecommendArticle} from "./request/article.js";
+import {findArticle} from "./request/article.js";
 import {formatDate, getTagName} from "./util/util.js";
 
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('articleContainer');
 
     // 当前选中的分类
-    let currentCategory = 0;
+    let currentCategory = 'rec';
     let page = 1
     // 滚动加载相关变量
     let isLoading = false;
@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // 给当前点击的标签添加active类
             this.classList.add('active');
             // 更新当前分类
-            console.log(this.dataset.category)
             currentCategory = this.dataset.category;
 
             performSearch();
@@ -89,8 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const fragment = document.createDocumentFragment();
 
         results.forEach(article => {
-            
-            const tag = article.tagName;
+            const tag = getTagName(article.tag);
             const updatedAt = formatDate(article.updatedAt);
 
             const articleItem = document.createElement('div');
@@ -98,8 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // 文章链接
             const articleLink = document.createElement('a');
-            // articleLink.href = `/article/${article.id}`;
-            articleLink.href = `/index.jsp?page=article&&id=${article.id}`;
+            articleLink.href = `/article/${article.id}`;
             articleLink.style.textDecoration = 'none';
             articleLink.style.color = 'inherit';
 
@@ -146,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(fragment);
 
         // 检查是否还有更多内容
-        hasMore = results.length >= 10;
+        hasMore = results.length >= 12; // 假设每页10条
         if(!hasMore){
             showNoMoreContent();
         }
@@ -190,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     container.addEventListener('scroll', handleScroll);
+    // 优化后的滚动处理函数
     function handleScroll() {
         const now = Date.now();
         // 添加简单的节流控制（100ms间隔）
@@ -216,18 +214,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // 加载更多文章
+    // 加载更多文章（优化版）
     async function loadMoreArticles() {
         try {
             isLoading = true;
             showLoading();
 
             // 获取当前时间戳用于防止重复请求
+            const requestTime = Date.now();
             page+=1
-            const newResults = await apiFindArticle({
+            // 模拟API请求
+            const newResults = await findArticle({
                 query: searchInput.value.trim(),
                 category: currentCategory,
-                page: page
+                page: page,
+                _: requestTime // 防止缓存
             });
 
             // 处理结果
@@ -256,11 +257,10 @@ document.addEventListener('DOMContentLoaded', function () {
         isLoading = true;
         showLoading();
 
-        // console.log({query, currentCategory,page})
+        console.log({query, currentCategory,page})
         // 模拟API请求延迟
         setTimeout(() => {
-            const tag=currentCategory
-            apiFindArticle({page,tag ,query}).then(res => {
+            findArticle({query, currentCategory,page}).then(res => {
                 handleSearchResult(res);
                 isLoading = false;
             }).catch(() => {
@@ -271,34 +271,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 显示热门搜索
-    async function showHotSearches() {
-        let hotSearches = [
-            // {id: 1, title: '前端'},
+    function showHotSearches() {
+        const hotSearches = [
+            {rank: 1, title: "春季穿搭", content: "当前最热门的搜索"},
+            {rank: 2, title: "减肥食谱", content: "热门健康饮食"},
+            {rank: 3, title: "旅游攻略", content: "五一假期热门目的地"},
+            {rank: 4, title: "编程学习", content: "热门IT技能"},
+            {rank: 5, title: "健身教程", content: "居家锻炼方法"}
         ];
-        const res=await apiRecommendArticle()
-
-        hotSearches=res.data.data
-
-        console.log(hotSearches);
-        
-        
 
         rankings.innerHTML = '';
-        hotSearches.forEach((item,index) => {
+        hotSearches.forEach(item => {
             const div = document.createElement('div');
             div.className = 'ranking-item';
             div.innerHTML = `
-                <div class="rank-number">${index+1}</div>
+                <div class="rank-number">${item.rank}</div>
                 <div class="rank-content">
                     <div class="rank-title">${item.title}</div>
                 </div>
             `;
-            // 新增：点击跳转到对应文章页面
-            div.addEventListener('click', function() {
-                window.location.href = `/index.jsp?page=article&&id=${item.id}`;
-            });
             rankings.appendChild(div);
         });
+        searchResults.style.display = 'block';
+    }
+
+
+    // 显示结果
+    function displayResults(results) {
+        rankings.innerHTML = '';
+
+        if (results.length === 0) {
+            rankings.innerHTML = '<p>没有找到相关结果</p>';
+        } else {
+            console.log(results)
+        }
+
         searchResults.style.display = 'block';
     }
 });

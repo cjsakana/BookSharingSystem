@@ -6,8 +6,6 @@ import kg.us.sakanatang.service.TagService;
 import kg.us.sakanatang.mapper.TagMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
 * @author sakana
 * @description 针对表【tag(分享书籍表)】的数据库操作Service实现
@@ -17,30 +15,6 @@ import java.util.List;
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     implements TagService{
 
-    @Override
-    public Tag createTag(String name) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteTag(Integer id) {
-        return false;
-    }
-
-    @Override
-    public boolean updateTag(Tag tag) {
-        return false;
-    }
-
-    @Override
-    public List<Tag> getAllTags() {
-        return null;
-    }
-
-    @Override
-    public List<Tag> getTagsByIds(List<Integer> ids) {
-        return null;
-    }
 }
 
 

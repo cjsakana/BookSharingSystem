@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (res.code === 200 && res.data.code === 200) {
             Toast.show('注册成功')
-            localStorage.setItem('userData',JSON.stringify(res.data.data))
+            localStorage.setItem('userData',res.data.data)
             setTimeout(() => {
                 window.location.href = '/index.jsp';
             }, 1000);

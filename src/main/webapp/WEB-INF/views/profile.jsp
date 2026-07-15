@@ -119,82 +119,7 @@
             color: #999;
             font-size: 15px;
         }
-        .user-sex {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        /* 文章容器样式 */
-        .article-container {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            position: relative;
-        }
 
-        .article-item {
-            padding: 15px;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
-            height: 300px;
-        }
-
-        /* 文章封面样式 */
-        .article-cover {
-            width: 100%;
-            height: 120px;
-            background-color: #f0f0f0;
-            margin-bottom: 10px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        /* 文章标题 - 两行显示，高度固定 */
-        .article-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            height: 40px;
-            line-height: 20px;
-        }
-
-        /* 文章元信息 */
-        .article-meta {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            color: #666;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-        
-        /* 加载指示器 */
-        .loading-indicator {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 15px;
-            color: #666;
-        }
-
-        /* 没有更多内容提示 */
-        .no-more-content {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 15px;
-            color: #666;
-        }
     </style>
 </head>
 <body>
@@ -203,14 +128,12 @@
 <div class="profile-container">
     <div class="profile-header">
         <div style="display:flex;flex-direction: row">
-            <img src="https://img2.baidu.com/it/u=3839186672,3565557071&fm=253&fmt=auto&app=120&f=JPEG?w=667&h=500"
-                 class="profile-avatar"></img>
+            <img src="https://img2.baidu.com/it/u=3839186672,3565557071&fm=253&fmt=auto&app=120&f=JPEG?w=667&h=500" class="profile-avatar"></img>
             <div class="profile-info">
-                <h1 class="username" id="username"></h1>
-                <p class="user-id-ip" id="uid"></p>
-                <p class="user-sex" id="sex"></p>
-                <p class="bio" id="signature"></p>
-                <p class="likes-count" id="likes"></p>
+                <h1 class="username">魚</h1>
+                <p class="user-id-ip">uid：1</p>
+                <p class="bio">该用户很神秘，没有留下什么</p>
+                <p class="likes-count">0获赞</p>
             </div>
         </div>
 
@@ -220,9 +143,9 @@
         <button class="tab-button active">笔记</button>
     </div>
 
-    <div id="articleContainer" class="article-container">
+    <div class="empty-content">
+        <p>你还没有发布任何内容哦</p>
     </div>
 </div>
 </body>
-<script  type="module" src="${pageContext.request.contextPath}/js/profile.js"></script>
 </html>

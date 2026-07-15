@@ -6,15 +6,11 @@
 
     <resultMap id="BaseResultMap" type="kg.us.sakanatang.domain.entity.Likes">
             <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="createdAt" column="createdAt" jdbcType="TIMESTAMP"/>
-            <result property="updatedAt" column="updatedAt" jdbcType="TIMESTAMP"/>
-            <result property="deletedAt" column="deletedAt" jdbcType="TIMESTAMP"/>
             <result property="userId" column="userId" jdbcType="INTEGER"/>
             <result property="articleId" column="articleId" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,createdAt,updatedAt,
-        deletedAt,userId,articleId
+        id,userId,articleId
     </sql>
 </mapper>

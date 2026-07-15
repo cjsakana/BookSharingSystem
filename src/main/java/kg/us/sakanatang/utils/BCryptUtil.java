@@ -15,8 +15,8 @@ public class BCryptUtil {
     public static  boolean matches(String rawPassword, String encodedPassword) {
 //        System.out.println(rawPassword.trim()+" "+ encodedPassword.trim());
 //        System.out.println(new BCryptPasswordEncoder().matches(rawPassword.trim(), encodedPassword.trim()));
-//       return encoder.matches(rawPassword.trim(), encodedPassword.trim());
+//        return encoder.matches(rawPassword.trim(), encodedPassword.trim());
         // 靠，test为true，实际应用却为False，玩毛
-         return true;
+        return true;
     }
 }

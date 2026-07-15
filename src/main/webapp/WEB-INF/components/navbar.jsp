@@ -46,8 +46,6 @@
 
         <div class="more-menu" id="moreMenu">
             <div class="more-item" id="aboutButton">关于</div>
-            <div class="more-item" id="editProfileButton">修改个人信息</div>
-            <div class="more-item" id="changePasswordButton">修改密码</div>
             <div class="more-item" id="logoutButton">退出登录</div>
         </div>
     </div>
@@ -65,42 +63,82 @@
     </div>
 </div>
 
-<!-- 修改个人信息弹窗 -->
-<div class="modal-overlay" id="editProfileModal">
-    <div class="modal-content">
-        <span class="modal-close" id="closeEditProfileModal">&times;</span>
-        <h3>修改个人信息</h3>
-        <form id="navbar-editProfileForm">
-            <label for="navbar-name">昵称：</label>
-            <input type="text" id="navbar-name" name="navbar-name"><br><br>
-            <label for="navbar-sex">性别：</label>
-            <select id="navbar-sex" name="navbar-sex">
-                <option value="0">女</option>
-                <option value="1">男</option>
-                <option value="2">保密</option>
-            </select><br><br>
-            <label for="navbar-signature">个性签名：</label>
-            <input type="text" id="navbar-signature" name="navbar-signature"><br><br>
-            <button type="submit">保存</button>
-        </form>
-    </div>
-</div>
+<script>
+    const container = document.getElementById('avatar-container');
 
-<!-- 修改密码弹窗 -->
-<div class="modal-overlay" id="changePasswordModal">
-    <div class="modal-content">
-        <span class="modal-close" id="closeChangePasswordModal">&times;</span>
-        <h3>修改密码</h3>
-        <form id="navbar-changePasswordForm">
-            <label for="navbar-oldPassword">旧密码：</label>
-            <input type="password" id="navbar-oldPassword" name="navbar-oldPassword"><br><br>
-            <label for="navbar-newPassword">新密码：</label>
-            <input type="password" id="navbar-newPassword" name="navbar-newPassword"><br><br>
-            <label for="navbar-confirmPassword">确认新密码：</label>
-            <input type="password" id="navbar-confirmPassword" name="navbar-confirmPassword"><br><br>
-            <button type="submit">保存</button>
-        </form>
-    </div>
-</div>
+     // 从 localStorage 读取 userData
+    const userData = localStorage.getItem('userData');
 
-<script type="module" src="${pageContext.request.contextPath}/js/navbar.js"></script>
+    if (userData) {
+        try {
+            const { avatar } = JSON.parse(userData);
+
+            // 2. 如果存在头像URL，替换默认图标
+            if (avatar?.trim()) {
+                // 移除默认图标
+                const icon = container.querySelector('.fa-user');
+                if (icon) icon.remove();
+
+                // 插入头像图片
+                const img = document.createElement('img');
+                img.src = avatar;
+                img.className = 'user-avatar';
+                img.alt = '用户头像';
+                img.onerror = () => {
+                    img.src = 'default-avatar.png'; // 加载失败时显示默认图
+                };
+
+                // 将头像插入到文字前
+                container.insertBefore(img, container.querySelector('.nav-text'));
+            }
+        } catch (e) {
+            console.error('解析本地存储失败:', e);
+        }
+    }
+
+
+    // 更多菜单控制
+    const moreButton = document.getElementById('moreButton');
+    const moreMenu = document.getElementById('moreMenu');
+    const aboutButton = document.getElementById('aboutButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const aboutModal = document.getElementById('aboutModal');
+    const closeModal = document.getElementById('closeModal');
+
+    // 点击更多按钮
+    moreButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        moreMenu.classList.toggle('show');
+    });
+
+    // 点击关于
+    aboutButton.addEventListener('click', function() {
+        moreMenu.classList.remove('show');
+        aboutModal.classList.add('show');
+    });
+
+    // 点击退出登录
+    logoutButton.addEventListener('click', function() {
+        //
+        // window.location.href = 'logout.jsp';
+    });
+
+    // 关闭弹窗
+    closeModal.addEventListener('click', function() {
+        aboutModal.classList.remove('show');
+    });
+
+    // 点击外部关闭菜单和弹窗
+    document.addEventListener('click', function() {
+        moreMenu.classList.remove('show');
+    });
+
+    // 阻止弹窗内容点击冒泡
+    aboutModal.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    document.querySelector('.modal-content').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+</script>

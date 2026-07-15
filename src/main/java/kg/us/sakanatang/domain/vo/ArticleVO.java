@@ -13,11 +13,7 @@ public class ArticleVO {
     private String cover;
     private String title;
     private String content;
-    private Integer tag;
-    private String tagName;
     private Integer userId;
-    private String userAvatar;
-    private String username;
+    private Integer tag;
     private Integer likes;
-    private Integer isPublished;
 }
